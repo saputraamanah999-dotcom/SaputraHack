@@ -1,6 +1,5 @@
 // ===========================================
-// BOYHACK - WAYGROUND PREMIUM ULTIMATE v5.0
-// 100% WORKING - DETEKSI JAWABAN PASTI BENAR
+// BOYHACK QUIZIZZ - WAYGROUND PREMIUM v5.0
 // ===========================================
 // GitHub: saputraamanah999-dotcom/SaputraHack
 // ===========================================
@@ -9,15 +8,15 @@
     'use strict';
 
     // --- HAPUS INSTANCE LAMA ---
-    if (document.getElementById('wayground-premium-v5')) {
-        document.getElementById('wayground-premium-v5').remove();
+    if (document.getElementById('boyhack-quiz-panel')) {
+        document.getElementById('boyhack-quiz-panel').remove();
     }
 
-    console.log('%c🔥 WAYGROUND PREMIUM v5.0', 'color: #00ffff; font-size: 28px; font-weight: bold; text-shadow: 0 0 20px cyan;');
-    console.log('%c📱 100% WORKING EDITION', 'color: #00ff00; font-size: 20px;');
+    console.log('%c🔥 BOYHACK QUIZIZZ v5.0', 'color: #00ffff; font-size: 20px; font-weight: bold;');
+    console.log('%c📱 Android Mode Ready', 'color: #ffaa00; font-size: 16px;');
 
     // ===========================================
-    // 1. BYPASS SUPER AMAN
+    // 1. BYPASS DETECTION
     // ===========================================
     try { 
         Object.defineProperty(document, 'hidden', { 
@@ -33,7 +32,7 @@
         }); 
     } catch(e) {}
 
-    // Blokir semua event deteksi
+    // Blokir event visibility
     const originalAdd = EventTarget.prototype.addEventListener;
     EventTarget.prototype.addEventListener = function(type, listener, options) {
         const blockedEvents = [
@@ -48,397 +47,419 @@
     };
 
     // ===========================================
-    // 2. BUAT PANEL KEREN
+    // 2. DETEKSI ANDROID
     // ===========================================
     const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
+    // ===========================================
+    // 3. BUAT PANEL UTAMA
+    // ===========================================
     const panel = document.createElement('div');
-    panel.id = 'wayground-premium-v5';
+    panel.id = 'boyhack-quiz-panel';
     panel.style.cssText = `
         position: fixed;
         top: ${isAndroid ? '10px' : '20px'};
-        left: ${isAndroid ? '50%' : 'auto'};
-        right: ${isAndroid ? 'auto' : '20px'};
-        transform: ${isAndroid ? 'translateX(-50%)' : 'none'};
-        width: ${isAndroid ? '96%' : '450px'};
-        max-width: 500px;
+        right: ${isAndroid ? '10px' : '20px'};
+        width: ${isAndroid ? '96%' : '380px'};
+        max-width: 400px;
         max-height: 90vh;
         overflow-y: auto;
         background: #0a0f1f;
-        border: 3px solid #00ffff;
-        border-radius: 20px;
-        padding: 20px;
+        border: 3px solid #00ff00;
+        border-radius: 15px;
+        padding: 15px;
         color: #00ff00;
         font-family: 'Courier New', monospace;
         font-size: 14px;
         z-index: 9999999;
-        box-shadow: 0 0 30px #00ffff, 0 0 60px rgba(0,255,255,0.3);
+        box-shadow: 0 0 30px #00ff00, 0 0 60px rgba(0,255,0,0.3);
         backdrop-filter: blur(10px);
     `;
 
     panel.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;">
-            <div>
-                <span style="color: #ff0; font-size: 24px; font-weight: bold;">🔥 BOYHACK</span>
-                <span style="background: #00ffff; color: #000; padding: 3px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px;">v5.0</span>
-            </div>
-            <button id="wg-close" style="background: #f00; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 18px;">✖</button>
-        </div>
-
-        <!-- PIN JOIN -->
-        <div style="margin-bottom: 15px;">
-            <label style="color: #aaa; font-size: 12px;">🔑 PIN GAME</label>
-            <div style="display: flex; gap: 5px;">
-                <input id="wg-pin" type="text" placeholder="Contoh: 00216554" style="flex: 3; background: #000; color: #0f0; border: 2px solid #0f0; border-radius: 10px; padding: 12px; font-size: 16px;">
-                <button id="wg-join" style="flex: 1; background: #0f0; color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px;">JOIN</button>
-            </div>
-        </div>
-
-        <!-- MODE BUTTONS -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 15px;">
-            <button class="wg-btn" id="wg-scan" style="background: #00ffff; color: #000;">🔍 SCAN SOAL</button>
-            <button class="wg-btn" id="wg-preview" style="background: #ffaa00;">👁️ PREVIEW</button>
-            <button class="wg-btn" id="wg-auto" style="background: #00ff00;">🤖 AUTO JAWAB</button>
-            <button class="wg-btn" id="wg-stop" style="background: #ff4444;">⏹ STOP</button>
-        </div>
-
-        <!-- SETTINGS -->
-        <div style="background: #000; padding: 10px; border-radius: 10px; margin-bottom: 15px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                <span style="color: #fff;">⏱️ Delay:</span>
-                <input type="range" id="wg-delay" min="0" max="5" step="0.5" value="2" style="flex: 1;">
-                <span id="wg-delay-value" style="color: #0f0; min-width: 40px;">2.0s</span>
-            </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="color: #fff;">⚡ Auto Click:</span>
-                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                    <input type="checkbox" id="wg-autoclick" style="opacity: 0; width: 0; height: 0;">
-                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 24px; transition: .3s;"></span>
-                    <span style="position: absolute; content: ''; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; border-radius: 50%; transition: .3s;"></span>
-                </label>
+                <span style="color: #ffaa00; font-size: 20px; font-weight: bold;">🔥 BOYHACK</span>
+                <span style="background: #00ff00; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 10px;">v5.0</span>
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <span id="bh-minimize" style="background: #ffaa00; color: #000; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; border-radius: 5px; cursor: pointer; font-weight: bold;">−</span>
+                <span id="bh-close" style="background: #f00; color: #fff; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; border-radius: 5px; cursor: pointer; font-weight: bold;">✖</span>
             </div>
         </div>
-
-        <!-- HASIL SCAN -->
-        <div style="background: #000; border: 2px solid #333; border-radius: 10px; padding: 15px; min-height: 200px; max-height: 350px; overflow-y: auto;">
-            <div id="wg-result" style="color: #0f0; font-family: monospace;">
-                <div style="color: #ff0; text-align: center; margin-bottom: 15px;">⬇️ KLIK SCAN SOAL UNTUK MULAI ⬇️</div>
+        
+        <div id="bh-main-content">
+            <!-- PIN INPUT -->
+            <div style="margin-bottom: 12px;">
+                <div style="display: flex; gap: 5px;">
+                    <input id="bh-pin-input" type="text" placeholder="Masukkan PIN Game" style="flex: 3; background: #000; color: #0f0; border: 2px solid #0f0; border-radius: 8px; padding: 10px; font-size: 14px;">
+                    <button id="bh-join-btn" style="flex: 1; background: #0f0; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; padding: 10px;">JOIN</button>
+                </div>
             </div>
-        </div>
-
-        <!-- STATUS -->
-        <div style="margin-top: 15px; display: flex; justify-content: space-between; color: #888; font-size: 12px; border-top: 1px solid #333; padding-top: 10px;">
-            <span>📊 Soal: <span id="wg-count">0</span></span>
-            <span>📌 PIN: <span id="wg-pin-display">-</span></span>
-            <span>⚡ Status: <span id="wg-status" style="color: #0f0;">SIAP</span></span>
+            
+            <!-- BUTTONS -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 12px;">
+                <button id="bh-scan-btn" style="background: #00aaff; color: #fff; border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer;">🔍 SCAN SOAL</button>
+                <button id="bh-answer-btn" style="background: #00ff00; color: #000; border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer;">✅ TAMPILKAN JAWABAN</button>
+                <button id="bh-auto-btn" style="background: #ffaa00; color: #000; border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer;">⚡ AUTO JAWAB</button>
+                <button id="bh-stop-btn" style="background: #ff4444; color: #fff; border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer;">⏹ STOP</button>
+            </div>
+            
+            <!-- DELAY SLIDER -->
+            <div style="background: #000; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>⏱️ Delay Jawaban:</span>
+                    <span id="bh-delay-value">2.0 detik</span>
+                </div>
+                <input type="range" id="bh-delay-slider" min="0" max="5" step="0.5" value="2" style="width: 100%;">
+            </div>
+            
+            <!-- HASIL SCAN SOAL -->
+            <div style="background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
+                <div id="bh-soal-container" style="color: #0f0;">
+                    <div style="color: #888; text-align: center; padding: 20px;">
+                        🔍 Klik <b>SCAN SOAL</b> untuk melihat soal dan jawaban
+                    </div>
+                </div>
+            </div>
+            
+            <!-- STATUS -->
+            <div style="display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 8px; color: #888; font-size: 12px;">
+                <span>📊 Soal: <span id="bh-total-soal">0</span></span>
+                <span>📌 PIN: <span id="bh-pin-display">-</span></span>
+                <span>⚡ Status: <span id="bh-status">SIAP</span></span>
+            </div>
         </div>
     `;
 
     document.body.appendChild(panel);
 
     // ===========================================
-    // 3. STYLE UNTUK BUTTON
-    // ===========================================
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .wg-btn {
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .wg-btn:active {
-            transform: scale(0.95);
-        }
-        .wg-highlight {
-            border: 4px solid #00ff00 !important;
-            background: rgba(0, 255, 0, 0.2) !important;
-            animation: wg-pulse 1s infinite;
-        }
-        @keyframes wg-pulse {
-            0% { box-shadow: 0 0 5px #0f0; }
-            50% { box-shadow: 0 0 20px #0f0; }
-            100% { box-shadow: 0 0 5px #0f0; }
-        }
-        .wg-correct-answer {
-            border-left: 5px solid #00ff00 !important;
-            background: rgba(0, 255, 0, 0.1) !important;
-            padding-left: 10px !important;
-        }
-    `;
-    document.head.appendChild(style);
-
-    // ===========================================
     // 4. STATE
     // ===========================================
     let state = {
-        questions: [],
+        soal: [],
         autoInterval: null,
-        currentPin: '',
-        delay: 2000
+        delay: 2000,
+        minimized: false
     };
 
     // ===========================================
-    // 5. FUNGSI SCAN SOAL (100% WORKING)
+    // 5. FUNGSI UPDATE STATUS
     // ===========================================
-    function scanQuestions() {
-        updateStatus('SCANNING...');
+    function updateStatus(text, warna) {
+        const el = document.getElementById('bh-status');
+        if(el) {
+            el.innerText = text;
+            el.style.color = warna || '#0f0';
+        }
+    }
+
+    // ===========================================
+    // 6. FUNGSI UPDATE PIN
+    // ===========================================
+    function updatePinDisplay(pin) {
+        const el = document.getElementById('bh-pin-display');
+        if(el) el.innerText = pin || '-';
+    }
+
+    // ===========================================
+    // 7. TOMBOL CLOSE (X)
+    // ===========================================
+    document.getElementById('bh-close').onclick = function() {
+        if(state.autoInterval) clearInterval(state.autoInterval);
+        panel.remove();
+    };
+
+    // ===========================================
+    // 8. TOMBOL MINIMIZE (−)
+    // ===========================================
+    document.getElementById('bh-minimize').onclick = function() {
+        const content = document.getElementById('bh-main-content');
+        if(state.minimized) {
+            content.style.display = 'block';
+            this.innerHTML = '−';
+            this.style.background = '#ffaa00';
+        } else {
+            content.style.display = 'none';
+            this.innerHTML = '+';
+            this.style.background = '#00ff00';
+        }
+        state.minimized = !state.minimized;
+    };
+
+    // ===========================================
+    // 9. FUNGSI JOIN GAME
+    // ===========================================
+    document.getElementById('bh-join-btn').onclick = function() {
+        const pin = document.getElementById('bh-pin-input').value.trim();
+        if(!pin || pin.length < 3) {
+            alert('❌ Masukkan PIN yang valid!');
+            return;
+        }
+
+        updatePinDisplay(pin);
+        updateStatus('JOINING...', '#ffaa00');
+
+        // Isi semua input PIN
+        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+            input.value = pin;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        // Klik tombol join
+        setTimeout(() => {
+            document.querySelectorAll('button, .btn, .button').forEach(btn => {
+                const text = btn.innerText.toLowerCase();
+                if(text.includes('join') || text.includes('masuk') || text.includes('play')) {
+                    btn.click();
+                }
+            });
+            updateStatus('JOINED');
+        }, 500);
+    };
+
+    // ===========================================
+    // 10. FUNGSI SCAN SOAL (8 METODE)
+    // ===========================================
+    document.getElementById('bh-scan-btn').onclick = function() {
+        updateStatus('SCANNING...', '#ffaa00');
+        const container = document.getElementById('bh-soal-container');
         let hasil = [];
-        let resultDiv = document.getElementById('wg-result');
-        
-        try {
-            console.log('🔍 Mencari soal dengan 10 metode berbeda...');
 
-            // METODE 1: Dari window._questions (Quizizz)
-            if (window._questions && Array.isArray(window._questions)) {
-                console.log('✅ Metode 1: window._questions');
-                hasil = window._questions.map(q => ({
-                    text: q.text || q.question || 'Soal',
-                    options: q.options || q.answers || [],
-                    correct: q.correct || 0
-                }));
-            }
+        // METHOD 1: window._questions (Quizizz)
+        if(window._questions && window._questions.length > 0) {
+            hasil = window._questions.map((q, idx) => ({
+                no: idx + 1,
+                soal: q.structure?.query?.text || q.text || 'Soal ' + (idx+1),
+                opsi: q.structure?.options?.map(o => o.text) || q.options || [],
+                jawaban: q.structure?.answer || q.answer || 0
+            }));
+        }
 
-            // METODE 2: Dari window.quizData
-            else if (window.quizData?.questions) {
-                console.log('✅ Metode 2: window.quizData');
-                hasil = window.quizData.questions.map(q => ({
-                    text: q.text || q.question || 'Soal',
-                    options: q.options || q.answers || [],
-                    correct: q.correct || 0
-                }));
-            }
+        // METHOD 2: window.quizData
+        else if(window.quizData && window.quizData.questions) {
+            hasil = window.quizData.questions.map((q, idx) => ({
+                no: idx + 1,
+                soal: q.text || q.question || 'Soal ' + (idx+1),
+                opsi: q.options || q.answers || [],
+                jawaban: q.correct || 0
+            }));
+        }
 
-            // METODE 3: Dari window.gameData
-            else if (window.gameData?.questions) {
-                console.log('✅ Metode 3: window.gameData');
-                hasil = window.gameData.questions.map(q => ({
-                    text: q.q || q.text || q.question || 'Soal',
-                    options: q.ops || q.options || q.answers || [],
-                    correct: q.c || q.correct || 0
-                }));
-            }
+        // METHOD 3: window.gameData
+        else if(window.gameData && window.gameData.questions) {
+            hasil = window.gameData.questions.map((q, idx) => ({
+                no: idx + 1,
+                soal: q.q || q.text || q.question || 'Soal ' + (idx+1),
+                opsi: q.ops || q.options || q.answers || [],
+                jawaban: q.c || q.correct || 0
+            }));
+        }
 
-            // METODE 4: Dari localStorage
-            else if (localStorage.getItem('quizData')) {
-                console.log('✅ Metode 4: localStorage');
-                try {
-                    let data = JSON.parse(localStorage.getItem('quizData'));
-                    if (data.questions) {
-                        hasil = data.questions.map(q => ({
-                            text: q.text || q.question || 'Soal',
-                            options: q.options || q.answers || [],
-                            correct: q.correct || 0
-                        }));
-                    }
-                } catch(e) {}
-            }
+        // METHOD 4: localStorage
+        else if(localStorage.getItem('quizData')) {
+            try {
+                const data = JSON.parse(localStorage.getItem('quizData'));
+                if(data.questions) {
+                    hasil = data.questions.map((q, idx) => ({
+                        no: idx + 1,
+                        soal: q.text || q.question || 'Soal ' + (idx+1),
+                        opsi: q.options || q.answers || [],
+                        jawaban: q.correct || 0
+                    }));
+                }
+            } catch(e) {}
+        }
 
-            // METODE 5: Dari sessionStorage
-            else if (sessionStorage.getItem('gameState')) {
-                console.log('✅ Metode 5: sessionStorage');
-                try {
-                    let data = JSON.parse(sessionStorage.getItem('gameState'));
-                    if (data.questions) {
-                        hasil = data.questions.map(q => ({
-                            text: q.text || q.question || 'Soal',
-                            options: q.options || q.answers || [],
-                            correct: q.correct || 0
-                        }));
-                    }
-                } catch(e) {}
-            }
+        // METHOD 5: sessionStorage
+        else if(sessionStorage.getItem('gameState')) {
+            try {
+                const data = JSON.parse(sessionStorage.getItem('gameState'));
+                if(data.questions) {
+                    hasil = data.questions.map((q, idx) => ({
+                        no: idx + 1,
+                        soal: q.text || q.question || 'Soal ' + (idx+1),
+                        opsi: q.options || q.answers || [],
+                        jawaban: q.correct || 0
+                    }));
+                }
+            } catch(e) {}
+        }
 
-            // METODE 6: SCAN DOM - Cari soal dan opsi
-            if (hasil.length === 0) {
-                console.log('✅ Metode 6: DOM Scanning');
-                
-                // Cari semua elemen yang mungkin berisi soal
-                const questionElements = document.querySelectorAll([
-                    '.question', '[data-question]', '.quiz-question', '.soal',
-                    '.question-text', '.qtext', '.content h2', '.content h3',
-                    '[class*="question"]', '[class*="soal"]'
-                ].join(','));
+        // METHOD 6: DOM - Cari elemen soal
+        if(hasil.length === 0) {
+            const soalElements = document.querySelectorAll('[data-testid="question-text"], .question-text, .question, [class*="question"]');
+            
+            soalElements.forEach((el, idx) => {
+                const teksSoal = el.innerText || el.textContent || 'Soal ' + (idx+1);
+                if(teksSoal.length < 3) return;
 
-                questionElements.forEach((el, idx) => {
-                    let questionText = el.innerText?.trim() || `Soal ${idx + 1}`;
-                    if (questionText.length < 5) return;
+                const parent = el.closest('div') || document;
+                const opsiElements = parent.querySelectorAll('[data-testid="option"], .option, [class*="option"], button');
 
-                    // Cari opsi di sekitar
-                    let parent = el.closest('div, section, form') || document;
-                    let optionElements = parent.querySelectorAll([
-                        'input[type="radio"] + label', 'input[type="radio"]',
-                        '.option', '[data-option]', '.answer', '.choice',
-                        'button[role="radio"]', '[class*="option"]'
-                    ].join(','));
+                let opsi = [];
+                let jawabanBenar = -1;
 
-                    let options = [];
-                    let correctIndex = -1;
+                opsiElements.forEach((opt, optIdx) => {
+                    const teksOpt = opt.innerText || opt.textContent || 'Opsi ' + (optIdx+1);
+                    if(teksOpt && teksOpt.length > 0 && teksOpt.length < 100) {
+                        opsi.push(teksOpt);
 
-                    optionElements.forEach((opt, optIdx) => {
-                        let optText = opt.innerText?.trim() || opt.value || `Opsi ${optIdx + 1}`;
-                        if (optText && optText.length > 0) {
-                            options.push(optText);
-                            
-                            // Deteksi jawaban benar
-                            if (opt.classList.contains('correct') || 
-                                opt.dataset.correct === 'true' ||
-                                opt.getAttribute('aria-checked') === 'true' ||
-                                (opt.type === 'radio' && opt.checked) ||
-                                opt.style.borderColor === 'green' ||
-                                opt.style.backgroundColor?.includes('green')) {
-                                correctIndex = optIdx;
-                            }
+                        if(opt.classList.contains('correct') || 
+                           opt.dataset.correct === 'true' ||
+                           opt.style.borderColor === 'rgb(0, 255, 0)' ||
+                           opt.style.backgroundColor === 'rgba(0, 255, 0, 0.1)') {
+                            jawabanBenar = optIdx;
                         }
+                    }
+                });
+
+                if(opsi.length > 0) {
+                    hasil.push({
+                        no: hasil.length + 1,
+                        soal: teksSoal,
+                        opsi: opsi,
+                        jawaban: jawabanBenar
                     });
+                }
+            });
+        }
 
-                    if (options.length > 0) {
-                        hasil.push({
-                            text: questionText,
-                            options: options,
-                            correct: correctIndex
-                        });
-                    }
-                });
-            }
-
-            // METODE 7: Cari semua radio button
-            if (hasil.length === 0) {
-                console.log('✅ Metode 7: Radio buttons');
-                let radioGroups = {};
-                document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    let name = radio.name || 'group';
-                    if (!radioGroups[name]) radioGroups[name] = [];
-                    radioGroups[name].push(radio);
+        // METHOD 7: Radio buttons
+        if(hasil.length === 0) {
+            const radios = document.querySelectorAll('input[type="radio"]');
+            if(radios.length > 0) {
+                const groups = {};
+                radios.forEach(r => {
+                    const name = r.name || 'group';
+                    if(!groups[name]) groups[name] = [];
+                    groups[name].push(r);
                 });
 
-                for (let group in radioGroups) {
-                    let radios = radioGroups[group];
-                    if (radios.length > 0) {
-                        let questionEl = radios[0].closest('div, section, form')?.previousElementSibling;
-                        let questionText = questionEl?.innerText || 'Soal tanpa teks';
-                        
-                        let options = radios.map(r => {
-                            let label = document.querySelector(`label[for="${r.id}"]`);
-                            return label?.innerText || r.value || 'Opsi';
-                        });
-                        
-                        let correctIndex = radios.findIndex(r => r.checked);
-                        
-                        hasil.push({
-                            text: questionText,
-                            options: options,
-                            correct: correctIndex
-                        });
-                    }
+                for(let g in groups) {
+                    const soalText = groups[g][0].closest('div, section')?.previousElementSibling?.innerText || 'Soal';
+                    const opsi = groups[g].map(r => {
+                        const label = document.querySelector('label[for="' + r.id + '"]');
+                        return label ? label.innerText : r.value || 'Opsi';
+                    });
+                    const jawabanBenar = groups[g].findIndex(r => r.checked);
+
+                    hasil.push({
+                        no: hasil.length + 1,
+                        soal: soalText,
+                        opsi: opsi,
+                        jawaban: jawabanBenar
+                    });
                 }
             }
+        }
 
-            // METODE 8: Cari data dari script tags
-            if (hasil.length === 0) {
-                console.log('✅ Metode 8: Script tags');
-                document.querySelectorAll('script:not([src])').forEach(script => {
-                    let content = script.innerText;
-                    if (content.includes('questions') || content.includes('quizData')) {
-                        try {
-                            let matches = content.match(/questions\s*:\s*(\[.*?\])/s);
-                            if (matches) {
-                                let data = JSON.parse(matches[1].replace(/'/g, '"'));
-                                hasil = data.map(q => ({
-                                    text: q.text || q.question || 'Soal',
-                                    options: q.options || q.answers || [],
-                                    correct: q.correct || 0
-                                }));
-                            }
-                        } catch(e) {}
+        // METHOD 8: Script tags
+        if(hasil.length === 0) {
+            document.querySelectorAll('script:not([src])').forEach(script => {
+                const content = script.innerText;
+                if(content.includes('questions') || content.includes('quizData')) {
+                    try {
+                        const matches = content.match(/questions\s*:\s*(\[.*?\])/s);
+                        if(matches) {
+                            const data = JSON.parse(matches[1].replace(/'/g, '"'));
+                            hasil = data.map((q, idx) => ({
+                                no: idx + 1,
+                                soal: q.text || q.question || 'Soal ' + (idx+1),
+                                opsi: q.options || q.answers || [],
+                                jawaban: q.correct || 0
+                            }));
+                        }
+                    } catch(e) {}
+                }
+            });
+        }
+
+        // Simpan hasil
+        state.soal = hasil;
+        document.getElementById('bh-total-soal').innerText = hasil.length;
+
+        // Tampilkan hasil
+        if(hasil.length === 0) {
+            container.innerHTML = '<div style="color:#ffaa00; text-align:center;">❌ Tidak menemukan soal.<br>Mungkin belum masuk game atau soal belum muncul</div>';
+        } else {
+            let html = '';
+            hasil.forEach(q => {
+                html += '<div style="margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">';
+                html += '<div style="color:#ffaa00; font-weight:bold; margin-bottom:5px;">' + q.no + '. ' + q.soal.substring(0, 60) + (q.soal.length > 60 ? '...' : '') + '</div>';
+                
+                q.opsi.forEach((opt, idx) => {
+                    const isJawaban = (idx === q.jawaban);
+                    html += '<div style="margin-left:10px; margin-bottom:3px; color:' + (isJawaban ? '#00ff00' : '#aaa') + ';">';
+                    html += (isJawaban ? '✅ ' : '○ ') + String.fromCharCode(65 + idx) + '. ' + opt.substring(0, 40) + (opt.length > 40 ? '...' : '');
+                    if(isJawaban) html += ' <span style="color:#0f0; font-weight:bold;">⬅️ JAWABAN</span>';
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+
+        updateStatus('READY');
+    };
+
+    // ===========================================
+    // 11. FUNGSI TAMPILKAN JAWABAN (HIGHLIGHT)
+    // ===========================================
+    document.getElementById('bh-answer-btn').onclick = function() {
+        if(state.soal.length === 0) {
+            alert('❌ Scan soal dulu!');
+            return;
+        }
+
+        let highlighted = 0;
+
+        state.soal.forEach(q => {
+            if(q.jawaban >= 0 && q.opsi[q.jawaban]) {
+                const jawabanText = q.opsi[q.jawaban];
+                document.querySelectorAll('[data-testid="option"], .option, [class*="option"], button').forEach(el => {
+                    if(el.innerText.includes(jawabanText.substring(0, 20))) {
+                        el.style.border = '4px solid #00ff00';
+                        el.style.boxShadow = '0 0 20px #00ff00';
+                        el.style.backgroundColor = 'rgba(0,255,0,0.2)';
+                        el.style.transform = 'scale(1.02)';
+                        el.style.transition = 'all 0.3s';
+                        highlighted++;
                     }
                 });
             }
-
-            // Simpan hasil
-            state.questions = hasil;
-            document.getElementById('wg-count').innerText = hasil.length;
-
-            // Tampilkan hasil
-            if (hasil.length === 0) {
-                resultDiv.innerHTML = `
-                    <div style="color: #ffaa00; text-align: center;">
-                        ❌ TIDAK DITEMUKAN SOAL<br>
-                        <span style="color: #888; font-size: 12px;">Mungkin soal belum muncul atau halaman berbeda</span>
-                    </div>
-                `;
-            } else {
-                displayQuestions(hasil);
-                highlightCorrectAnswers(hasil);
-            }
-
-            updateStatus('READY');
-            console.log(`✅ Scan selesai! Ditemukan ${hasil.length} soal`);
-
-        } catch (error) {
-            console.error('❌ Error scanning:', error);
-            resultDiv.innerHTML = `<div style="color: #f00;">Error: ${error.message}</div>`;
-            updateStatus('ERROR');
-        }
-    }
-
-    // ===========================================
-    // 6. TAMPILKAN SOAL
-    // ===========================================
-    function displayQuestions(questions) {
-        let resultDiv = document.getElementById('wg-result');
-        let html = `<div style="color: #ff0; margin-bottom: 15px; text-align: center;">📋 DAFTAR SOAL (${questions.length})</div>`;
-        
-        questions.forEach((q, i) => {
-            html += `<div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">`;
-            html += `<div style="color: #ff0; font-weight: bold; margin-bottom: 5px;">${i+1}. ${q.text.substring(0, 60)}${q.text.length > 60 ? '...' : ''}</div>`;
-            
-            if (q.options && q.options.length > 0) {
-                q.options.forEach((opt, j) => {
-                    let isCorrect = (j === q.correct);
-                    html += `<div style="margin-left: 15px; margin-bottom: 3px; color: ${isCorrect ? '#0f0' : '#999'};">`;
-                    html += isCorrect ? '✅ ' : '○ ';
-                    html += `${String.fromCharCode(65 + j)}. ${opt.substring(0, 40)}${opt.length > 40 ? '...' : ''}`;
-                    if (isCorrect) html += ` <span style="color:#0f0; font-weight:bold;">⬅️ JAWABAN</span>`;
-                    html += '</div>';
-                });
-            } else {
-                html += `<div style="color: #f00; margin-left:15px;">❌ Tidak ada opsi</div>`;
-            }
-            html += '</div>';
         });
 
-        resultDiv.innerHTML = html;
-    }
+        alert('✅ ' + highlighted + ' jawaban di-highlight hijau!');
+    };
 
     // ===========================================
-    // 7. HIGHLIGHT JAWABAN BENAR DI HALAMAN
+    // 12. FUNGSI AUTO JAWAB
     // ===========================================
-    function highlightCorrectAnswers(questions) {
-        if (!questions || questions.length === 0) return;
-
-        // Hapus highlight lama
-        document.querySelectorAll('.wg-highlight').forEach(el => {
-            el.classList.remove('wg-highlight');
-        });
-
-        // Cari soal yang sedang aktif
-        let currentQuestionText = '';
-        let questionEl = document.querySelector('.question, [data-question], .quiz-question, .soal');
-        if (questionEl) {
-            currentQuestionText = questionEl.innerText;
+    document.getElementById('bh-auto-btn').onclick = function() {
+        if(state.soal.length === 0) {
+            alert('❌ Scan soal dulu!');
+            return;
         }
 
-        // Cari jawaban untuk soal ini
-        for (let q of questions) {
-            if (currentQuestionText.includes(q.text.substring(0, 30)) || q.text.includes(currentQuestionText.substring(0, 30))) {
-                if (q.correct >= 0 && q.options && q.options.length > 0) {
-                    let correctAnswerText = q.options[q.correct];
-                    
-                    // Highlight semua elemen yang berisi jawaban benar
-                    document.querySelectorAll('.option, [data-option], .answer, .choice, button[role="radio"]').forEach(el => {
-                        if (el.innerText.includes(correctAnswerText)) {
-                       
+        if(state.autoInterval) {
+            clearInterval(state.autoInterval);
+        }
+
+        updateStatus('AUTO', '#00ff00');
+
+        state.autoInterval = setInterval(() => {
+            try {
+                const soalAktif = document.querySelector('[data-testid="question-text"], .question-text, .question');
+                if(!soalAktif) return;
+
+                const teksSoalAktif = soalAktif.innerText;
+
+                for(let i = 0; i < state.soal.length; i++) {
+                    const q = state.soal[i];
+                    if(teksSoalAktif.includes(q.soal.substring(0, 30)) || q.soal.includes(teksSoalAktif.substring(0, 30))) {
+                        if(q.jawaban >= 0 && q.opsi[q.jawaban]) {
+                            const jawabanText = q.opsi[q.jawaban];
+    
