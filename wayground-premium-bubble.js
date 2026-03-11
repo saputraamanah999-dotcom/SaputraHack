@@ -1,5 +1,5 @@
 // =====================================================
-// WAYGROUND PREMIUM BUBBLE - FULL FUNCTIONAL + OPACITY
+// WAYGROUND PREMIUM BUBBLE - FIXED OPACITY (DEFAULT 100%)
 // =====================================================
 
 (function() {
@@ -14,15 +14,6 @@
         Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: false });
         window.addEventListener('visibilitychange', (e) => e.stopImmediatePropagation(), true);
         window.addEventListener('blur', (e) => e.stopImmediatePropagation(), true);
-        
-        // Override addEventListener untuk mencegah detection
-        const originalAdd = EventTarget.prototype.addEventListener;
-        EventTarget.prototype.addEventListener = function(type, listener, options) {
-            if (type === 'visibilitychange' || type === 'blur' || type === 'pagehide') {
-                return;
-            }
-            return originalAdd.call(this, type, listener, options);
-        };
     })();
     
     // ==================== STYLE ====================
@@ -70,6 +61,7 @@
             box-shadow: 0 0 40px #00ff00;
             display: none;
             transition: opacity 0.3s;
+            opacity: 1; /* DEFAULT 100% - LANGSUNG KELIATAN */
         }
         .wg-premium-btn {
             background: #333;
@@ -108,6 +100,391 @@
             border-bottom: 2px solid #0f0;
         }
         .wg-opacity-slider {
+            width: 100%;
+            margin: 10px 0;
+            accent-color: #0f0;
+        }
+        .wg-status-badge {
+            background: #0f0;
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // ==================== CONTAINER ====================
+    let container = document.createElement('div');
+    container.id = 'wg-premium-bubble';
+    container.className = 'wg-premium-container';
+    container.style.top = '100px';
+    container.style.left = '100px';
+    
+    // ==================== BUBBLE ====================
+    let bubble = document.createElement('div');
+    bubble.className = 'wg-premium-bubble';
+    bubble.innerHTML = '⚡';
+    bubble.title = 'Wayground Premium';
+    
+    // ==================== PANEL ====================
+    let panel = document.createElement('div');
+    panel.className = 'wg-premium-panel';
+    panel.id = 'wg-premium-panel';
+    panel.innerHTML = `
+        <!-- DRAG HANDLE -->
+        <div class="wg-drag-handle" id="wg-premium-drag">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #ffff00; font-size: 24px; font-weight: bold;">⚡ WAYGROUND PREMIUM</span>
+                    <span class="wg-status-badge" id="wg-premium-status">ON</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <!-- OPACITY CONTROL - DEFAULT 1 (100%) -->
+                    <select id="wg-premium-opacity" style="background: #333; color: #0f0; border: 2px solid #0f0; border-radius: 5px; padding: 5px;">
+                        <option value="1" selected>100%</option>
+                        <option value="0.8">80%</option>
+                        <option value="0.6">60%</option>
+                        <option value="0.4">40%</option>
+                        <option value="0.2">20%</option>
+                    </select>
+                    <button id="wg-premium-close" style="background: #f00; color: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: pointer;">✖</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PIN SECTION -->
+        <div style="margin: 15px 0; background: #1a1a1a; padding: 15px; border-radius: 10px;">
+            <div style="display: flex; gap: 10px;">
+                <input id="wg-premium-pin" type="text" placeholder="MASUKKAN PIN GAME" style="flex: 3; background: #000; color: #0f0; border: 2px solid #0f0; border-radius: 5px; padding: 12px; font-size: 16px;">
+                <button id="wg-premium-join" style="flex: 1; background: #0f0; color: #000; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;">JOIN</button>
+            </div>
+            <div id="wg-premium-pin-status" style="margin-top: 8px; font-size: 12px; color: #ff0; text-align: center;"></div>
+        </div>
+        
+        <!-- BUTTONS ROW 1 -->
+        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button class="wg-premium-btn" id="premium-answers">📋 JAWABAN</button>
+            <button class="wg-premium-btn" id="premium-auto">🤖 AUTO</button>
+            <button class="wg-premium-btn" id="premium-stop">⏹️ STOP</button>
+            <button class="wg-premium-btn" id="premium-highlight">✨ HIGHLIGHT</button>
+            <button class="wg-premium-btn" id="premium-bypass">🛡️ BYPASS</button>
+        </div>
+        
+        <!-- BUTTONS ROW 2 -->
+        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button class="wg-premium-btn" id="premium-extract">📤 EXTRACT</button>
+            <button class="wg-premium-btn" id="premium-refresh">🔄 REFRESH</button>
+            <button class="wg-premium-btn" id="premium-reset">🔄 RESET</button>
+            <button class="wg-premium-btn" id="premium-test">🧪 TEST</button>
+        </div>
+        
+        <!-- CONTENT AREA -->
+        <div id="wg-premium-content" style="background: #000; padding: 15px; border-radius: 8px; min-height: 250px; max-height: 350px; overflow-y: auto; font-size: 14px;"></div>
+        
+        <!-- STATISTICS -->
+        <div style="margin-top: 15px; display: flex; justify-content: space-between; color: #666; font-size: 12px; border-top: 1px solid #333; padding-top: 10px;">
+            <span>Soal: <span id="wg-premium-count">0</span></span>
+            <span>Teridentifikasi: <span id="wg-premium-identified">0</span></span>
+            <span>Akurasi: <span id="wg-premium-accuracy">100%</span></span>
+            <span>⚡ Bubble: klik pojok</span>
+        </div>
+        
+        <!-- OPACITY SLIDER - DEFAULT 1 (100%) -->
+        <div style="margin-top: 10px;">
+            <div style="display: flex; justify-content: space-between; color: #0f0; margin-bottom: 5px;">
+                <span>Opacity:</span>
+                <span id="wg-premium-opacity-value">100%</span>
+            </div>
+            <input type="range" id="wg-premium-opacity-slider" class="wg-opacity-slider" min="0.1" max="1" step="0.1" value="1">
+        </div>
+    `;
+    
+    container.appendChild(bubble);
+    container.appendChild(panel);
+    document.body.appendChild(container);
+    
+    // ==================== DRAG BUBBLE ====================
+    let isDragging = false;
+    let dragOffsetX, dragOffsetY;
+    
+    bubble.addEventListener('mousedown', startDrag);
+    bubble.addEventListener('touchstart', startDrag);
+    
+    function startDrag(e) {
+        isDragging = true;
+        let clientX = e.clientX || e.touches[0].clientX;
+        let clientY = e.clientY || e.touches[0].clientY;
+        
+        let rect = container.getBoundingClientRect();
+        dragOffsetX = clientX - rect.left;
+        dragOffsetY = clientY - rect.top;
+        
+        container.style.transition = 'none';
+        e.preventDefault();
+    }
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag);
+    
+    function drag(e) {
+        if (!isDragging) return;
+        
+        let clientX = e.clientX || e.touches[0].clientX;
+        let clientY = e.clientY || e.touches[0].clientY;
+        
+        container.style.left = (clientX - dragOffsetX) + 'px';
+        container.style.top = (clientY - dragOffsetY) + 'px';
+    }
+    
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+    
+    function stopDrag() {
+        isDragging = false;
+        container.style.transition = '';
+    }
+    
+    // ==================== DRAG PANEL ====================
+    let dragHandle = document.getElementById('wg-premium-drag');
+    let isDraggingPanel = false;
+    let panelDragOffsetX, panelDragOffsetY;
+    
+    dragHandle.addEventListener('mousedown', (e) => {
+        isDraggingPanel = true;
+        let rect = panel.getBoundingClientRect();
+        panelDragOffsetX = e.clientX - rect.left;
+        panelDragOffsetY = e.clientY - rect.top;
+        panel.style.transition = 'none';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDraggingPanel) return;
+        panel.style.left = (e.clientX - panelDragOffsetX) + 'px';
+        panel.style.top = (e.clientY - panelDragOffsetY) + 'px';
+        panel.style.transform = 'none';
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDraggingPanel = false;
+        panel.style.transition = '';
+    });
+    
+    // ==================== TOGGLE PANEL ====================
+    bubble.addEventListener('click', () => {
+        panel.style.display = 'block';
+        panel.style.left = '50%';
+        panel.style.top = '50%';
+        panel.style.transform = 'translate(-50%, -50%)';
+        panel.style.opacity = document.getElementById('wg-premium-opacity-slider').value; // Pakai nilai slider
+    });
+    
+    document.getElementById('wg-premium-close').addEventListener('click', () => {
+        panel.style.display = 'none';
+    });
+    
+    // ==================== OPACITY CONTROL ====================
+    const opacitySelect = document.getElementById('wg-premium-opacity');
+    const opacitySlider = document.getElementById('wg-premium-opacity-slider');
+    const opacityValue = document.getElementById('wg-premium-opacity-value');
+    
+    function setOpacity(value) {
+        panel.style.opacity = value;
+        opacityValue.innerText = Math.round(value * 100) + '%';
+        opacitySelect.value = value;
+        opacitySlider.value = value;
+    }
+    
+    // Set default opacity ke 1 (100%)
+    setOpacity(1);
+    
+    opacitySelect.addEventListener('change', (e) => {
+        setOpacity(parseFloat(e.target.value));
+    });
+    
+    opacitySlider.addEventListener('input', (e) => {
+        setOpacity(parseFloat(e.target.value));
+    });
+    
+    // ==================== STATE ====================
+    let state = {
+        answers: [],
+        autoInterval: null,
+        highlightInterval: null,
+        isActive: true,
+        detectedCount: 0
+    };
+    
+    // ==================== EKSTRAK JAWABAN ====================
+    function extractAnswers() {
+        let result = [];
+        
+        try {
+            // Method 1: window._questions
+            if (window._questions && Array.isArray(window._questions)) {
+                result = window._questions.map(q => ({
+                    question: q.text || q.question || q.title || '',
+                    options: q.options || q.answers || [],
+                    correct: q.correct || q.correctOption || q.correctAnswer || 0
+                }));
+            }
+            
+            // Method 2: window.quizData
+            else if (window.quizData && window.quizData.questions) {
+                result = window.quizData.questions.map(q => ({
+                    question: q.text || q.question || '',
+                    options: q.options || q.answers || [],
+                    correct: q.correct || q.correctOption || 0
+                }));
+            }
+            
+            // Method 3: window.gameData
+            else if (window.gameData && window.gameData.questions) {
+                result = window.gameData.questions.map(q => ({
+                    question: q.q || q.text || q.question || '',
+                    options: q.ops || q.options || q.answers || [],
+                    correct: q.c || q.correct || q.correctOption || 0
+                }));
+            }
+            
+            // Method 4: DOM
+            if (result.length === 0) {
+                document.querySelectorAll('.question, [data-question], .soal, .quiz-question').forEach((el, idx) => {
+                    let qText = el.innerText || el.textContent || `Soal ${idx + 1}`;
+                    let options = [];
+                    let correct = -1;
+                    
+                    el.querySelectorAll('input[type="radio"] + label, .option, [data-option], .answer-choice').forEach((opt, optIdx) => {
+                        options.push(opt.innerText || opt.textContent || `Opsi ${optIdx + 1}`);
+                        
+                        if (opt.classList.contains('correct')) correct = optIdx;
+                        if (opt.dataset.correct === 'true') correct = optIdx;
+                        
+                        let radio = opt.querySelector('input[type="radio"]') || opt.previousElementSibling;
+                        if (radio && radio.checked) correct = optIdx;
+                    });
+                    
+                    result.push({
+                        question: qText,
+                        options: options,
+                        correct: correct
+                    });
+                });
+            }
+            
+        } catch (e) {}
+        
+        state.answers = result;
+        state.detectedCount = result.length;
+        
+        document.getElementById('wg-premium-count').innerText = result.length;
+        document.getElementById('wg-premium-identified').innerText = result.length;
+        
+        return result;
+    }
+    
+    // ==================== JOIN GAME ====================
+    function joinGame(pin) {
+        if (!pin || pin.length < 3) {
+            document.getElementById('wg-premium-pin-status').innerText = '❌ PIN tidak valid';
+            return;
+        }
+        
+        document.getElementById('wg-premium-pin-status').innerHTML = `⏳ Mencoba join dengan PIN: ${pin}...`;
+        
+        let inputs = document.querySelectorAll('input[type="text"], input[type="number"], .pin-input, .game-pin, [placeholder*="PIN"]');
+        inputs.forEach(input => {
+            input.value = pin;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        
+        setTimeout(() => {
+            let buttons = document.querySelectorAll('button, .btn, .button');
+            let joined = false;
+            
+            buttons.forEach(btn => {
+                let text = btn.innerText.toLowerCase();
+                if (text.includes('join') || text.includes('masuk') || text.includes('play')) {
+                    btn.click();
+                    document.getElementById('wg-premium-pin-status').innerHTML = '✅ JOIN BERHASIL!';
+                    joined = true;
+                }
+            });
+            
+            if (!joined) {
+                document.getElementById('wg-premium-pin-status').innerHTML = '⚠️ Klik tombol join manual';
+            } else {
+                setTimeout(() => {
+                    document.getElementById('wg-premium-pin-status').innerHTML = '';
+                }, 3000);
+            }
+        }, 500);
+    }
+    
+    // ==================== UPDATE CONTENT ====================
+    function updateContent() {
+        let content = document.getElementById('wg-premium-content');
+        if (!content) return;
+        
+        extractAnswers();
+        
+        if (state.answers.length === 0) {
+            content.innerHTML = '<div style="color: #ff0; text-align: center; padding: 30px;">🔍 MENGANALISA SOAL...</div>';
+            return;
+        }
+        
+        let html = `<div style="color: #ff0; margin-bottom: 15px; text-align: center;">📊 TERIDENTIFIKASI ${state.answers.length} SOAL</div>`;
+        
+        state.answers.forEach((q, i) => {
+            html += `<div style="margin-bottom: 15px; border-left: 4px solid #0f0; padding-left: 12px;">`;
+            html += `<div style="color: #ff0; font-weight: bold;">${i+1}. ${(q.question || '').substring(0, 70)}</div>`;
+            
+            if (q.options && q.options.length > 0) {
+                q.options.forEach((opt, j) => {
+                    let isCorrect = (j === q.correct);
+                    html += `<div style="margin-left: 15px; color: ${isCorrect ? '#0f0' : '#999'};">`;
+                    html += isCorrect ? '✓ ' : '○ ';
+                    html += `${String.fromCharCode(65+j)}. ${opt || 'Kosong'}`;
+                    if (isCorrect) html += ` ⬅️ JAWABAN`;
+                    html += '</div>';
+                });
+            }
+            html += '</div>';
+        });
+        
+        content.innerHTML = html;
+    }
+    
+    // ==================== AUTO ANSWER ====================
+    function startAutoAnswer() {
+        if (state.answers.length === 0) {
+            alert('Belum ada jawaban! Klik JAWABAN dulu.');
+            return;
+        }
+        
+        if (state.autoInterval) clearInterval(state.autoInterval);
+        
+        state.autoInterval = setInterval(() => {
+            try {
+                if (!state.isActive) return;
+                
+                let options = document.querySelectorAll('input[type="radio"]:not([disabled]), .option:not(.disabled)');
+                if (options.length === 0) return;
+                
+                let questionText = document.querySelector('.question, [data-question], .soal, h2')?.innerText || '';
+                
+                for (let i = 0; i < state.answers.length; i++) {
+                    let q = state.answers[i];
+                    let qText = q.question || '';
+                    
+                    if (questionText.includes(qText.substring(0, 40)) || qText.includes(questionText.substring(0, 40))) {
+                        let correctIdx = q.correct;
+                        
+                        if (correctIdx >= 0 && correctIdx < options.length) {
+               .wg-opacity-slider {
             width: 100%;
             margin: 10px 0;
             accent-color: #0f0;
